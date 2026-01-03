@@ -45,7 +45,7 @@ export default function DashboardSidebar({
     },
     {
       icon: Wand2,
-      label: "Criativos",
+      label: "Criativos Visuais",
       href: "/criativos",
     },
     {
@@ -192,7 +192,7 @@ export default function DashboardSidebar({
               ForgeAds
             </p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Produção profissional de anúncios para o seu negócio.
+              Criativos forjados para performance.
             </p>
           </div>
         </div>

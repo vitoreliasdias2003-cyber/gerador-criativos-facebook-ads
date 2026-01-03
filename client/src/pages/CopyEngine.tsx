@@ -5,11 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, MessageSquare, Copy, Check, Send, BrainCircuit } from "lucide-react";
+import { Sparkles, MessageSquare, Copy, Check, Send, BrainCircuit, Image as ImageIcon, ArrowRight } from "lucide-react";
 import DashboardLayoutPremium from "@/components/DashboardLayoutPremium";
+import { useLocation } from "wouter";
 import { toast } from "sonner";
 
 export default function CopyEngine() {
+  const [, setLocation] = useLocation();
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [result, setResult] = useState<{
@@ -50,6 +52,17 @@ export default function CopyEngine() {
     setCopied(true);
     toast.success("Copiado para a área de transferência!");
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSendToImage = () => {
+    if (!result) return;
+    const params = new URLSearchParams({
+      headline: result.headline,
+      produto: formData.produto,
+      publico: formData.publico
+    });
+    setLocation(`/criativos?${params.toString()}`);
+    toast.info("Enviando para o Image Engine...");
   };
 
   return (
@@ -164,12 +177,22 @@ export default function CopyEngine() {
                     <div className="p-2 bg-accent/20 rounded-lg">
                       <BrainCircuit className="w-5 h-5 text-accent" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <h4 className="text-sm font-bold">Ângulo Psicológico</h4>
                       <p className="text-xs text-muted-foreground mt-1">{result.angulo}</p>
                     </div>
                   </CardContent>
                 </Card>
+
+                <Button 
+                  variant="outline" 
+                  className="w-full border-primary/30 hover:bg-primary/5 text-primary font-bold py-6 gap-2"
+                  onClick={handleSendToImage}
+                >
+                  <ImageIcon className="w-5 h-5" />
+                  Forjar Criativo Visual para esta Copy
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
               </div>
             ) : (
               <Card className="h-full border-dashed border-2 border-muted bg-muted/5 flex flex-col items-center justify-center min-h-[400px]">
