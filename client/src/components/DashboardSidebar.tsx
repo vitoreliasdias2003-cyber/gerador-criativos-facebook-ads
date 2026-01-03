@@ -113,7 +113,7 @@ export default function DashboardSidebar({
       <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
         {navItems.map((item, index) => {
           const Icon = item.icon;
-          const isActive = activeItem === item.label.toLowerCase().replace(/\s+/g, "-");
+          const isActive = location === item.href || (item.href !== "/" && location.startsWith(item.href));
 
           return (
             <Link
@@ -122,7 +122,7 @@ export default function DashboardSidebar({
               onClick={item.onClick}
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
-                location === item.href
+                isActive
                   ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-md"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/10 hover:text-sidebar-accent-foreground"
               )}

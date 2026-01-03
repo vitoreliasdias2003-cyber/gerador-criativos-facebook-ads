@@ -23,8 +23,8 @@ export default function DashboardLayoutPremium({
   footer,
   showDefaultHeader = true,
   showDefaultSidebar = true,
-  userName,
-  userPlan,
+  userName = "Vitor Elias",
+  userPlan = "Premium",
   activeNavItem,
   onNavigate,
 }: DashboardLayoutPremiumProps) {
@@ -42,10 +42,10 @@ export default function DashboardLayoutPremium({
       )}
 
       {/* Main Layout com Sidebar */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden h-[calc(100vh-73px)]">
         {/* Sidebar Lateral */}
         {(showDefaultSidebar || sidebar) && (
-          <div className="hidden lg:block">
+          <div className="hidden lg:block h-full">
             {sidebar || (
               <DashboardSidebar
                 activeItem={activeNavItem}
@@ -56,7 +56,7 @@ export default function DashboardLayoutPremium({
         )}
 
         {/* Conteúdo Principal */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-card/20">
+        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-card/20 h-full">
           <div className="container mx-auto px-6 py-8">
             {children}
           </div>
