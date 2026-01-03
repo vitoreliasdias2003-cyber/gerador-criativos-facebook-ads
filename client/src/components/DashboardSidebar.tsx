@@ -103,16 +103,16 @@ export default function DashboardSidebar({
       )}>
         <img 
           src="/assets/forgeads-logo.png" 
-          alt="ForgeAds Logo" 
+          alt="ForgeAds Symbol" 
           className={cn(
             "object-contain transition-all duration-300",
             isCollapsed ? "h-8 w-8" : "h-10 w-auto"
           )}
         />
         {!isCollapsed && (
-          <div className="flex flex-col">
-            <h1 className="text-lg font-bold tracking-tight text-foreground leading-none">ForgeAds</h1>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium mt-1">Engine</span>
+          <div className="flex flex-col border-l border-white/10 pl-3">
+            <h1 className="text-lg font-bold tracking-tight text-white leading-none">ForgeAds</h1>
+            <span className="text-[6px] text-muted-foreground uppercase tracking-[0.1em] font-bold mt-1">PRECISION. PERFORMANCE.</span>
           </div>
         )}
       </div>

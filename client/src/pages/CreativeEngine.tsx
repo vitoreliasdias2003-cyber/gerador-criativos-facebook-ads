@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Wand2, Image as ImageIcon, Download, Share2, Sparkles, Copy, RefreshCw, Layers } from "lucide-react";
 import DashboardLayoutPremium from "@/components/DashboardLayoutPremium";
+import LogoLoading from "@/components/LogoLoading";
 import { toast } from "sonner";
 
 export default function CreativeEngine() {
@@ -146,20 +147,14 @@ export default function CreativeEngine() {
                   </Select>
                 </div>
                 <Button 
-                  className="w-full mt-4 bg-primary hover:bg-primary/90 text-white font-bold py-6 shadow-lg shadow-primary/20"
+                  className="w-full mt-4 bg-primary hover:bg-primary/90 text-white font-bold py-6 shadow-lg shadow-primary/20 flex items-center justify-center"
                   onClick={handleGenerate}
                   disabled={loading}
                 >
                   {loading ? (
-                    <span className="flex items-center gap-2">
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                      Forjando Criativo...
-                    </span>
+                    "Forjando Criativo..."
                   ) : (
-                    <span className="flex items-center gap-2">
-                      <Wand2 className="w-5 h-5" />
-                      Gerar Criativo
-                    </span>
+                    "Gerar Criativo"
                   )}
                 </Button>
               </CardContent>
@@ -173,13 +168,7 @@ export default function CreativeEngine() {
               generated ? "border-primary/20 bg-card shadow-2xl" : "border-dashed border-muted bg-muted/5"
             )}>
               {loading ? (
-                <div className="text-center space-y-4 animate-pulse">
-                  <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
-                    <Sparkles className="w-12 h-12 text-primary animate-bounce" />
-                  </div>
-                  <h3 className="text-xl font-bold">Forjando sua imagem...</h3>
-                  <p className="text-muted-foreground">Nossa IA está compondo o criativo perfeito para seu público.</p>
-                </div>
+                <LogoLoading message="Forjando seu criativo visual..." />
               ) : generated ? (
                 <div className="w-full h-full flex flex-col p-4">
                   <div className="flex-1 relative group rounded-xl overflow-hidden border shadow-inner bg-black">

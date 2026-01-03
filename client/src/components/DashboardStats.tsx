@@ -102,21 +102,14 @@ export default function DashboardStats({
                   )}
                 </div>
 
-                {/* Image Icon */}
-                <div className="relative">
-                  <div className={cn(
-                    "absolute inset-0 bg-gradient-to-br blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500",
+                {/* Clean Icon */}
+                <div
+                  className={cn(
+                    "p-4 rounded-2xl bg-gradient-to-br shadow-lg group-hover:scale-110 transition-transform duration-300",
                     stat.color
-                  )} />
-                  <img 
-                    src={
-                      stat.title === "Criativos Gerados" ? "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=200&auto=format&fit=crop&q=60" :
-                      stat.title === "Créditos Disponíveis" ? "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=200&auto=format&fit=crop&q=60" :
-                      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=200&auto=format&fit=crop&q=60"
-                    } 
-                    alt={stat.title} 
-                    className="w-14 h-14 object-cover rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-110 border border-white/10 relative z-10"
-                  />
+                  )}
+                >
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>

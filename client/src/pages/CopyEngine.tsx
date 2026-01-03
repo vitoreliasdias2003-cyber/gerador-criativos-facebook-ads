@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, MessageSquare, Copy, Check, Send, BrainCircuit, Image as ImageIcon, ArrowRight } from "lucide-react";
 import DashboardLayoutPremium from "@/components/DashboardLayoutPremium";
+import LogoLoading from "@/components/LogoLoading";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 
@@ -123,20 +124,14 @@ export default function CopyEngine() {
                   </Select>
                 </div>
                 <Button 
-                  className="w-full mt-4 bg-accent hover:bg-accent/90 text-white font-bold py-6"
+                  className="w-full mt-4 bg-accent hover:bg-accent/90 text-white font-bold py-6 flex items-center justify-center"
                   onClick={handleGenerate}
                   disabled={loading}
                 >
                   {loading ? (
-                    <span className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 animate-spin" />
-                      ChatGPT está escrevendo...
-                    </span>
+                    "ChatGPT está escrevendo..."
                   ) : (
-                    <span className="flex items-center gap-2">
-                      <MessageSquare className="w-5 h-5" />
-                      Gerar Copy Profissional
-                    </span>
+                    "Gerar Copy Profissional"
                   )}
                 </Button>
               </CardContent>
@@ -145,7 +140,11 @@ export default function CopyEngine() {
 
           {/* Result */}
           <div className="lg:col-span-7">
-            {result ? (
+            {loading ? (
+              <div className="h-full flex items-center justify-center min-h-[400px]">
+                <LogoLoading message="ChatGPT está escrevendo sua copy..." />
+              </div>
+            ) : result ? (
               <div className="space-y-6 animate-fade-in">
                 <Card className="border-accent/20 overflow-hidden">
                   <div className="bg-accent/10 px-6 py-3 border-b border-accent/20 flex justify-between items-center">

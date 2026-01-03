@@ -37,22 +37,22 @@ export default function DashboardHeader({
   return (
     <div className={cn("flex items-center justify-between", className)}>
       {/* Logo e Nome do Produto */}
-      <div className="flex items-center gap-3">
-        <div className="relative group">
+      <div className="flex items-center gap-4">
+        <div className="relative group flex items-center gap-3">
           <img 
             src="/assets/forgeads-logo.png" 
-            alt="ForgeAds Logo" 
-            className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            alt="ForgeAds Symbol" 
+            className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-500 -z-10" />
-        </div>
-        <div className="hidden sm:block">
-          <h1 className="text-xl font-bold text-foreground tracking-tight">
-            ForgeAds
-          </h1>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
-            Produção profissional de anúncios
-          </p>
+          <div className="flex flex-col border-l border-white/10 pl-3">
+            <h1 className="text-2xl font-bold text-white tracking-tight leading-none">
+              ForgeAds
+            </h1>
+            <p className="text-[8px] text-muted-foreground uppercase tracking-[0.2em] font-bold mt-1">
+              PRECISION. PERFORMANCE. AUTOMATION.
+            </p>
+          </div>
+          <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10" />
         </div>
       </div>
 
