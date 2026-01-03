@@ -25,4 +25,24 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Tabela para armazenar criativos gerados
+ */
+export const creatives = mysqlTable("creatives", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  nicho: text("nicho").notNull(),
+  publico: text("publico").notNull(),
+  objetivo: varchar("objetivo", { length: 50 }).notNull(),
+  consciencia: varchar("consciencia", { length: 50 }).notNull(),
+  tom: varchar("tom", { length: 50 }).notNull(),
+  headline: text("headline").notNull(),
+  textoAnuncio: text("textoAnuncio").notNull(),
+  cta: text("cta").notNull(),
+  anguloEmocional: text("anguloEmocional").notNull(),
+  ideiaCreativo: text("ideiaCreativo").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Creative = typeof creatives.$inferSelect;
+export type InsertCreative = typeof creatives.$inferInsert;

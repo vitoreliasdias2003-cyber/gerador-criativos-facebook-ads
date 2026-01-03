@@ -1,10 +1,12 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { z } from "zod";
+import { invokeLLM } from "./_core/llm";
+import { saveCreative, getUserCreatives } from "./db";
 
 export const appRouter = router({
-    // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
@@ -17,12 +19,95 @@ export const appRouter = router({
     }),
   }),
 
-  // TODO: add feature routers here, e.g.
-  // todo: router({
-  //   list: protectedProcedure.query(({ ctx }) =>
-  //     db.getUserTodos(ctx.user.id)
-  //   ),
-  // }),
+  creative: router({
+    generate: publicProcedure
+      .input(
+        z.object({
+          nicho: z.string().min(1, "Nicho é obrigatório"),
+          publico: z.string().min(1, "Público-alvo é obrigatório"),
+          objetivo: z.enum(["Vendas", "Leads", "WhatsApp"]),
+          consciencia: z.enum(["Frio", "Morno", "Quente"]),
+          tom: z.enum(["Emocional", "Profissional", "Direto", "Urgente"]),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const prompt = `Você é um especialista em Facebook Ads com mais de 10 anos de experiência.
+
+Crie UM anúncio persuasivo com base nas informações abaixo:
+
+Nicho do produto: ${input.nicho}
+Público-alvo: ${input.publico}
+Objetivo do anúncio: ${input.objetivo}
+Nível de consciência: ${input.consciencia}
+Tom da comunicação: ${input.tom}
+
+Regras:
+- Linguagem simples e direta
+- Não usar palavras proibidas pelo Facebook
+- Não prometer ganhos ou resultados irreais
+- Focar em dor, solução e ação
+
+Entregue EXATAMENTE neste formato:
+
+HEADLINE:
+(escreva uma headline curta e impactante)
+
+TEXTO DO ANÚNCIO:
+(escreva até 3 parágrafos curtos)
+
+CTA:
+(chamada clara para ação)
+
+ÂNGULO EMOCIONAL:
+(emoção principal explorada)
+
+IDEIA DE CRIATIVO:
+(descreva uma ideia de imagem ou vídeo)`;
+
+        try {
+          const response = await invokeLLM({
+            messages: [
+              {
+                role: "system",
+                content: "Você é um especialista em copywriting para Facebook Ads. Sempre responda no formato exato solicitado.",
+              },
+              {
+                role: "user",
+                content: prompt,
+              },
+            ],
+          });
+
+          const content = typeof response.choices[0]?.message?.content === 'string' 
+            ? response.choices[0]?.message?.content 
+            : "";
+
+          // Parse da resposta
+          const headlineMatch = content.match(/HEADLINE:\s*\n([^\n]+(?:\n(?!TEXTO DO ANÚNCIO:)[^\n]*)*)/i);
+          const textoMatch = content.match(/TEXTO DO ANÚNCIO:\s*\n([^\n]+(?:\n(?!CTA:)[^\n]*)*)/i);
+          const ctaMatch = content.match(/CTA:\s*\n([^\n]+(?:\n(?!ÂNGULO EMOCIONAL:)[^\n]*)*)/i);
+          const anguloMatch = content.match(/ÂNGULO EMOCIONAL:\s*\n([^\n]+(?:\n(?!IDEIA DE CRIATIVO:)[^\n]*)*)/i);
+          const ideiaMatch = content.match(/IDEIA DE CRIATIVO:\s*\n([^\n]+(?:\n|$)*)/i);
+
+          const headline = headlineMatch?.[1]?.trim() || "";
+          const textoAnuncio = textoMatch?.[1]?.trim() || "";
+          const cta = ctaMatch?.[1]?.trim() || "";
+          const anguloEmocional = anguloMatch?.[1]?.trim() || "";
+          const ideiaCreativo = ideiaMatch?.[1]?.trim() || "";
+
+          return {
+            headline,
+            textoAnuncio,
+            cta,
+            anguloEmocional,
+            ideiaCreativo,
+          };
+        } catch (error) {
+          console.error("[LLM] Error generating creative:", error);
+          throw new Error("Erro ao gerar criativo. Tente novamente.");
+        }
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

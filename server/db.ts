@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, InsertCreative, creatives } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,38 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function saveCreative(creative: InsertCreative) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot save creative: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(creatives).values(creative);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to save creative:", error);
+    throw error;
+  }
+}
+
+export async function getUserCreatives(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get creatives: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(creatives)
+      .where(eq(creatives.userId, userId))
+      .orderBy((t) => t.createdAt);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get creatives:", error);
+    return [];
+  }
+}

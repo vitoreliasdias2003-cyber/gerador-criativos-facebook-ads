@@ -1,31 +1,344 @@
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { getLoginUrl } from "@/const";
-import { Streamdown } from 'streamdown';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2, Copy, Check } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
+interface CreativeResult {
+  headline: string;
+  textoAnuncio: string;
+  cta: string;
+  anguloEmocional: string;
+  ideiaCreativo: string;
+}
+
 export default function Home() {
-  // The userAuth hooks provides authentication state
-  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
+  const [formData, setFormData] = useState<{
+    nicho: string;
+    publico: string;
+    objetivo: "Vendas" | "Leads" | "WhatsApp";
+    consciencia: "Frio" | "Morno" | "Quente";
+    tom: "Emocional" | "Profissional" | "Direto" | "Urgente";
+  }>({
+    nicho: "",
+    publico: "",
+    objetivo: "Vendas",
+    consciencia: "Frio",
+    tom: "Profissional",
+  });
 
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  const [result, setResult] = useState<CreativeResult | null>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const generateMutation = trpc.creative.generate.useMutation({
+    onSuccess: (data) => {
+      setResult(data);
+      toast.success("Criativo gerado com sucesso!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Erro ao gerar criativo");
+    },
+  });
+
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value as any,
+    }));
+  };
+
+  const handleGenerate = () => {
+    if (!formData.nicho.trim() || !formData.publico.trim()) {
+      toast.error("Preencha todos os campos obrigatórios");
+      return;
+    }
+
+    generateMutation.mutate(formData);
+  };
+
+  const copyToClipboard = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    toast.success("Copiado para a área de transferência!");
+    setTimeout(() => setCopiedField(null), 2000);
+  };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">
+            Gerador de Criativos para Facebook Ads
+          </h1>
+          <p className="text-lg text-slate-600">
+            Crie anúncios prontos em segundos
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Form Section */}
+          <div className="lg:col-span-1">
+            <Card className="sticky top-4">
+              <CardHeader>
+                <CardTitle className="text-xl">Informações do Anúncio</CardTitle>
+                <CardDescription>
+                  Preencha os dados para gerar seu criativo
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Nicho */}
+                <div className="space-y-2">
+                  <Label htmlFor="nicho" className="text-sm font-medium">
+                    Nicho do Produto *
+                  </Label>
+                  <Input
+                    id="nicho"
+                    placeholder="Ex: Software de gestão"
+                    value={formData.nicho}
+                    onChange={(e) => handleInputChange("nicho", e.target.value)}
+                    className="border-slate-300"
+                  />
+                </div>
+
+                {/* Público-alvo */}
+                <div className="space-y-2">
+                  <Label htmlFor="publico" className="text-sm font-medium">
+                    Público-alvo *
+                  </Label>
+                  <Input
+                    id="publico"
+                    placeholder="Ex: Pequenos empresários"
+                    value={formData.publico}
+                    onChange={(e) => handleInputChange("publico", e.target.value)}
+                    className="border-slate-300"
+                  />
+                </div>
+
+                {/* Objetivo */}
+                <div className="space-y-2">
+                  <Label htmlFor="objetivo" className="text-sm font-medium">
+                    Objetivo do Anúncio
+                  </Label>
+                  <Select
+                    value={formData.objetivo}
+                    onValueChange={(value) =>
+                      handleInputChange("objetivo", value)
+                    }
+                  >
+                    <SelectTrigger id="objetivo" className="border-slate-300">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Vendas">Vendas</SelectItem>
+                      <SelectItem value="Leads">Leads</SelectItem>
+                      <SelectItem value="WhatsApp">WhatsApp</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Consciência */}
+                <div className="space-y-2">
+                  <Label htmlFor="consciencia" className="text-sm font-medium">
+                    Nível de Consciência
+                  </Label>
+                  <Select
+                    value={formData.consciencia}
+                    onValueChange={(value) =>
+                      handleInputChange("consciencia", value)
+                    }
+                  >
+                    <SelectTrigger id="consciencia" className="border-slate-300">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Frio">Frio</SelectItem>
+                      <SelectItem value="Morno">Morno</SelectItem>
+                      <SelectItem value="Quente">Quente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Tom */}
+                <div className="space-y-2">
+                  <Label htmlFor="tom" className="text-sm font-medium">
+                    Tom da Comunicação
+                  </Label>
+                  <Select
+                    value={formData.tom}
+                    onValueChange={(value) => handleInputChange("tom", value)}
+                  >
+                    <SelectTrigger id="tom" className="border-slate-300">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Emocional">Emocional</SelectItem>
+                      <SelectItem value="Profissional">Profissional</SelectItem>
+                      <SelectItem value="Direto">Direto</SelectItem>
+                      <SelectItem value="Urgente">Urgente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Generate Button */}
+                <Button
+                  onClick={handleGenerate}
+                  disabled={generateMutation.isPending}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 h-10"
+                >
+                  {generateMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Gerando...
+                    </>
+                  ) : (
+                    "Gerar Criativo"
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Results Section */}
+          <div className="lg:col-span-2">
+            {result ? (
+              <div className="space-y-4">
+                {/* Headline */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-base">Headline</CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard(result.headline, "headline")}
+                        className="h-8 w-8 p-0"
+                      >
+                        {copiedField === "headline" ? (
+                          <Check className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-700 font-semibold">
+                      {result.headline}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Texto do Anúncio */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-base">Texto do Anúncio</CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          copyToClipboard(result.textoAnuncio, "texto")
+                        }
+                        className="h-8 w-8 p-0"
+                      >
+                        {copiedField === "texto" ? (
+                          <Check className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-700 whitespace-pre-wrap">
+                      {result.textoAnuncio}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* CTA */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-base">CTA</CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard(result.cta, "cta")}
+                        className="h-8 w-8 p-0"
+                      >
+                        {copiedField === "cta" ? (
+                          <Check className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-700 font-semibold">
+                      {result.cta}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Ângulo Emocional */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Ângulo Emocional</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-700">{result.anguloEmocional}</p>
+                  </CardContent>
+                </Card>
+
+                {/* Ideia de Criativo */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Ideia de Criativo</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-700 whitespace-pre-wrap">
+                      {result.ideiaCreativo}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Novo Criativo Button */}
+                <Button
+                  onClick={() => setResult(null)}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Gerar Novo Criativo
+                </Button>
+              </div>
+            ) : (
+              <Card className="h-full flex items-center justify-center min-h-96">
+                <CardContent className="text-center">
+                  <p className="text-slate-500 text-lg">
+                    Preencha o formulário e clique em "Gerar Criativo" para ver o resultado aqui
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
