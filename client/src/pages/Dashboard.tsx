@@ -54,7 +54,7 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-fade-in" style={{ animationDelay: "200ms" }}>
-        {/* Criar Criativo */}
+        {/* Creative Engine */}
         <Card className="group hover:shadow-xl hover:border-primary/30 transition-all duration-300 cursor-pointer relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500 to-cyan-500 opacity-10 group-hover:opacity-20 transition-opacity duration-300 blur-2xl" />
           <CardHeader>
@@ -62,23 +62,23 @@ export default function Dashboard() {
               <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
                 <Wand2 className="w-5 h-5 text-white" />
               </div>
-              <CardTitle className="text-lg">Criar Novo Criativo</CardTitle>
+              <CardTitle className="text-lg">Creative Engine</CardTitle>
             </div>
             <CardDescription>
-              Gere criativos profissionais em segundos com IA
+              Gere criativos visuais de alta performance com IA
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href="/criar-criativo">
+            <Link href="/criativos">
               <Button className="w-full group-hover:shadow-lg transition-shadow">
-                Começar Agora
+                Gerar Criativos Visuais
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </CardContent>
         </Card>
 
-        {/* Modo Automático */}
+        {/* Copy Engine */}
         <Card className="group hover:shadow-xl hover:border-accent/30 transition-all duration-300 cursor-pointer relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500 to-pink-500 opacity-10 group-hover:opacity-20 transition-opacity duration-300 blur-2xl" />
           <CardHeader>
@@ -87,20 +87,20 @@ export default function Dashboard() {
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-lg">Modo Automático</CardTitle>
+                <CardTitle className="text-lg">Copy Engine</CardTitle>
                 <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-0.5 rounded-full font-semibold">
                   PREMIUM
                 </span>
               </div>
             </div>
             <CardDescription>
-              Gere criativos a partir de links ou arquivos
+              ChatGPT especializado em copywriting de alta conversão
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href="/criar-criativo?mode=automatic">
+            <Link href="/copys">
               <Button variant="secondary" className="w-full group-hover:shadow-lg transition-shadow">
-                Usar Modo Automático
+                Gerar Copys Profissionais
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

@@ -45,13 +45,13 @@ export default function DashboardSidebar({
     },
     {
       icon: Wand2,
-      label: "Criar Criativo",
-      href: "/criar-criativo",
+      label: "Criativos",
+      href: "/criativos",
     },
     {
       icon: Sparkles,
-      label: "Modo Automático",
-      href: "/criar-criativo?mode=automatic",
+      label: "Copys",
+      href: "/copys",
       badge: "Premium",
       badgeVariant: "premium",
     },
