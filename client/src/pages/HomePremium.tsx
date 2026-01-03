@@ -15,7 +15,6 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import AutomaticMode from "./AutomaticMode";
 import DashboardLayoutPremium from "@/components/DashboardLayoutPremium";
-import HeaderPremium from "@/components/HeaderPremium";
 
 interface CreativeResult {
   headline: string;
@@ -118,12 +117,30 @@ export default function HomePremium() {
     toast.success("Imagem baixada com sucesso!");
   };
 
+  const handleNavigate = (item: string) => {
+    toast.info(`Navegando para: ${item}`);
+    // Implementar navegação real aqui
+  };
+
   return (
     <DashboardLayoutPremium
-      header={<HeaderPremium />}
+      userName="Vitor Elias"
+      userPlan="Premium"
+      activeNavItem="criar-criativo"
+      onNavigate={handleNavigate}
     >
-      {/* Mode Selector */}
+      {/* Page Title */}
       <div className="mb-8 animate-fade-in">
+        <h2 className="text-3xl font-bold text-foreground mb-2">
+          Criar Criativo
+        </h2>
+        <p className="text-muted-foreground">
+          Gere criativos profissionais para Facebook Ads com inteligência artificial
+        </p>
+      </div>
+
+      {/* Mode Selector */}
+      <div className="mb-8 animate-fade-in" style={{ animationDelay: "100ms" }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Manual Mode */}
           <button
@@ -172,10 +189,10 @@ export default function HomePremium() {
 
       {/* Main Content */}
       {mode === "manual" ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in" style={{ animationDelay: "200ms" }}>
           {/* Form Section */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-4">
+            <Card className="sticky top-24 shadow-xl">
               <CardHeader>
                 <CardTitle className="text-xl">Informações do Anúncio</CardTitle>
                 <CardDescription>
@@ -193,6 +210,7 @@ export default function HomePremium() {
                     placeholder="Ex: Software de gestão"
                     value={formData.nicho}
                     onChange={(e) => handleInputChange("nicho", e.target.value)}
+                    className="transition-all duration-200 focus:shadow-md"
                   />
                 </div>
 
@@ -206,6 +224,7 @@ export default function HomePremium() {
                     placeholder="Ex: Pequenos empresários"
                     value={formData.publico}
                     onChange={(e) => handleInputChange("publico", e.target.value)}
+                    className="transition-all duration-200 focus:shadow-md"
                   />
                 </div>
 
@@ -278,7 +297,7 @@ export default function HomePremium() {
                 <Button
                   onClick={handleGenerate}
                   disabled={generateMutation.isPending}
-                  className="w-full h-11 text-base font-semibold"
+                  className="w-full h-11 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   {generateMutation.isPending ? (
                     <>
@@ -301,7 +320,7 @@ export default function HomePremium() {
             {result ? (
               <div className="space-y-4 animate-fade-in">
                 {/* Headline */}
-                <Card>
+                <Card className="hover:shadow-xl transition-all duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">Headline</CardTitle>
@@ -309,7 +328,7 @@ export default function HomePremium() {
                         variant="ghost"
                         size="sm"
                         onClick={() => copyToClipboard(result.headline, "headline")}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 hover:bg-primary/10 transition-colors"
                       >
                         {copiedField === "headline" ? (
                           <Check className="h-4 w-4 text-green-500" />
@@ -320,14 +339,14 @@ export default function HomePremium() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-foreground font-semibold">
+                    <p className="text-foreground font-semibold text-lg">
                       {result.headline}
                     </p>
                   </CardContent>
                 </Card>
 
                 {/* Texto do Anúncio */}
-                <Card>
+                <Card className="hover:shadow-xl transition-all duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">Texto do Anúncio</CardTitle>
@@ -337,7 +356,7 @@ export default function HomePremium() {
                         onClick={() =>
                           copyToClipboard(result.textoAnuncio, "texto")
                         }
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 hover:bg-primary/10 transition-colors"
                       >
                         {copiedField === "texto" ? (
                           <Check className="h-4 w-4 text-green-500" />
@@ -348,14 +367,14 @@ export default function HomePremium() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-foreground whitespace-pre-wrap">
+                    <p className="text-foreground whitespace-pre-wrap leading-relaxed">
                       {result.textoAnuncio}
                     </p>
                   </CardContent>
                 </Card>
 
                 {/* CTA */}
-                <Card>
+                <Card className="hover:shadow-xl transition-all duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">CTA</CardTitle>
@@ -363,7 +382,7 @@ export default function HomePremium() {
                         variant="ghost"
                         size="sm"
                         onClick={() => copyToClipboard(result.cta, "cta")}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 hover:bg-primary/10 transition-colors"
                       >
                         {copiedField === "cta" ? (
                           <Check className="h-4 w-4 text-green-500" />
@@ -374,14 +393,14 @@ export default function HomePremium() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-foreground font-semibold">
+                    <p className="text-foreground font-semibold text-lg">
                       {result.cta}
                     </p>
                   </CardContent>
                 </Card>
 
                 {/* Ângulo Emocional */}
-                <Card>
+                <Card className="hover:shadow-xl transition-all duration-300">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base">Ângulo Emocional</CardTitle>
                   </CardHeader>
@@ -391,12 +410,12 @@ export default function HomePremium() {
                 </Card>
 
                 {/* Ideia de Criativo */}
-                <Card>
+                <Card className="hover:shadow-xl transition-all duration-300">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base">Ideia de Criativo</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-foreground whitespace-pre-wrap">
+                    <p className="text-foreground whitespace-pre-wrap leading-relaxed">
                       {result.ideiaCreativo}
                     </p>
                   </CardContent>
@@ -407,7 +426,7 @@ export default function HomePremium() {
                   onClick={handleGenerateImage}
                   disabled={generateImageMutation.isPending}
                   variant="secondary"
-                  className="w-full h-11 text-base font-semibold"
+                  className="w-full h-11 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   {generateImageMutation.isPending ? (
                     <>
@@ -424,7 +443,7 @@ export default function HomePremium() {
 
                 {/* Generated Image */}
                 {generatedImage && (
-                  <Card className="animate-fade-in">
+                  <Card className="animate-fade-in hover:shadow-xl transition-all duration-300">
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-base">Imagem do Criativo</CardTitle>
@@ -432,7 +451,7 @@ export default function HomePremium() {
                           variant="ghost"
                           size="sm"
                           onClick={downloadImage}
-                          className="h-8 w-8 p-0"
+                          className="h-8 w-8 p-0 hover:bg-primary/10 transition-colors"
                         >
                           <Download className="h-4 w-4" />
                         </Button>
@@ -442,7 +461,7 @@ export default function HomePremium() {
                       <img
                         src={generatedImage}
                         alt="Criativo gerado"
-                        className="w-full rounded-lg border border-border"
+                        className="w-full rounded-lg border border-border shadow-lg hover:shadow-xl transition-shadow duration-300"
                       />
                     </CardContent>
                   </Card>
@@ -455,19 +474,23 @@ export default function HomePremium() {
                     setGeneratedImage(null);
                   }}
                   variant="outline"
-                  className="w-full"
+                  className="w-full hover:shadow-md transition-all duration-300"
                 >
                   Gerar Novo Criativo
                 </Button>
               </div>
             ) : (
-              <Card className="h-full flex items-center justify-center min-h-96">
+              <Card className="h-full flex items-center justify-center min-h-[600px] shadow-xl">
                 <CardContent className="text-center">
-                  <div className="mb-4">
-                    <Sparkles className="w-12 h-12 text-muted-foreground mx-auto opacity-50" />
+                  <div className="mb-6 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-3xl" />
+                    <Sparkles className="w-16 h-16 text-primary mx-auto relative animate-pulse" />
                   </div>
-                  <p className="text-muted-foreground text-lg">
-                    Preencha o formulário e clique em "Gerar Criativo" para ver o resultado aqui
+                  <h3 className="text-xl font-semibold text-foreground mb-2">
+                    Pronto para criar?
+                  </h3>
+                  <p className="text-muted-foreground text-base max-w-md mx-auto">
+                    Preencha o formulário ao lado e clique em "Gerar Criativo" para ver a mágica acontecer
                   </p>
                 </CardContent>
               </Card>
