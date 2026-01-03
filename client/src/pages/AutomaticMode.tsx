@@ -123,7 +123,7 @@ export default function AutomaticMode() {
                 Gere criativos automaticamente a partir de um link ou arquivo
               </CardDescription>
             </div>
-            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold">
+            <div className="bg-accent/20 text-accent px-3 py-1 rounded-full text-xs font-semibold">
               PREMIUM
             </div>
           </div>
@@ -167,7 +167,7 @@ export default function AutomaticMode() {
                 placeholder="https://exemplo.com/produto"
                 value={linkInput}
                 onChange={(e) => setLinkInput(e.target.value)}
-                className="border-slate-300"
+                className=""
               />
             </div>
           )}
@@ -184,14 +184,14 @@ export default function AutomaticMode() {
                   type="file"
                   accept=".pdf,.doc,.docx,.txt"
                   onChange={handleFileUpload}
-                  className="border-slate-300"
+                  className=""
                 />
                 {fileContent && (
-                  <Check className="h-5 w-5 text-green-600" />
+                  <Check className="h-5 w-5 text-green-500" />
                 )}
               </div>
               {fileContent && (
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-muted-foreground">
                   Arquivo carregado ({Math.round(fileContent.length / 1024)} KB)
                 </p>
               )}
@@ -202,7 +202,7 @@ export default function AutomaticMode() {
           <Button
             onClick={handleAnalyze}
             disabled={analyzeMutation.isPending}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 h-10"
+            className="w-full bg-gradient-to-br from-accent to-blue-600 hover:shadow-lg hover:shadow-accent/40 text-white font-semibold py-2 h-10"
           >
             {analyzeMutation.isPending ? (
               <>
@@ -226,21 +226,21 @@ export default function AutomaticMode() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <p className="text-xs text-slate-500 font-medium">Nome do Produto</p>
-                <p className="text-slate-700 font-semibold">{result.productName}</p>
+                <p className="text-xs text-muted-foreground font-medium">Nome do Produto</p>
+                <p className="text-foreground font-semibold">{result.productName}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500 font-medium">Público-alvo</p>
-                <p className="text-slate-700">{result.targetAudience}</p>
+                <p className="text-xs text-muted-foreground font-medium">Público-alvo</p>
+                <p className="text-foreground">{result.targetAudience}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-xs text-slate-500 font-medium">Dor Principal</p>
-                  <p className="text-slate-700 text-sm">{result.mainPain}</p>
+                  <p className="text-xs text-muted-foreground font-medium">Dor Principal</p>
+                  <p className="text-foreground text-sm">{result.mainPain}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 font-medium">Benefício Principal</p>
-                  <p className="text-slate-700 text-sm">{result.mainBenefit}</p>
+                  <p className="text-xs text-muted-foreground font-medium">Benefício Principal</p>
+                  <p className="text-foreground text-sm">{result.mainBenefit}</p>
                 </div>
               </div>
             </CardContent>
@@ -258,7 +258,7 @@ export default function AutomaticMode() {
                   className="h-8 w-8 p-0"
                 >
                   {copiedField === "headline" ? (
-                    <Check className="h-4 w-4 text-green-600" />
+                    <Check className="h-4 w-4 text-green-500" />
                   ) : (
                     <Copy className="h-4 w-4" />
                   )}
@@ -266,7 +266,7 @@ export default function AutomaticMode() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-700 font-semibold">{result.headline}</p>
+              <p className="text-foreground font-semibold">{result.headline}</p>
             </CardContent>
           </Card>
 
@@ -282,7 +282,7 @@ export default function AutomaticMode() {
                   className="h-8 w-8 p-0"
                 >
                   {copiedField === "texto" ? (
-                    <Check className="h-4 w-4 text-green-600" />
+                    <Check className="h-4 w-4 text-green-500" />
                   ) : (
                     <Copy className="h-4 w-4" />
                   )}
@@ -290,7 +290,7 @@ export default function AutomaticMode() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-700 whitespace-pre-wrap">{result.textoAnuncio}</p>
+              <p className="text-foreground whitespace-pre-wrap">{result.textoAnuncio}</p>
             </CardContent>
           </Card>
 
@@ -306,7 +306,7 @@ export default function AutomaticMode() {
                   className="h-8 w-8 p-0"
                 >
                   {copiedField === "cta" ? (
-                    <Check className="h-4 w-4 text-green-600" />
+                    <Check className="h-4 w-4 text-green-500" />
                   ) : (
                     <Copy className="h-4 w-4" />
                   )}
@@ -314,7 +314,7 @@ export default function AutomaticMode() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-700 font-semibold">{result.cta}</p>
+              <p className="text-foreground font-semibold">{result.cta}</p>
             </CardContent>
           </Card>
 
@@ -324,7 +324,7 @@ export default function AutomaticMode() {
               <CardTitle className="text-base">Ângulo Emocional</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-700">{result.anguloEmocional}</p>
+              <p className="text-foreground">{result.anguloEmocional}</p>
             </CardContent>
           </Card>
 
@@ -334,7 +334,7 @@ export default function AutomaticMode() {
               <CardTitle className="text-base">Ideia de Criativo</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-700 whitespace-pre-wrap">{result.ideiaCreativo}</p>
+              <p className="text-foreground whitespace-pre-wrap">{result.ideiaCreativo}</p>
             </CardContent>
           </Card>
 
@@ -342,7 +342,7 @@ export default function AutomaticMode() {
           <Button
             onClick={handleGenerateImage}
             disabled={generateImageMutation.isPending}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 h-10"
+            className="w-full bg-gradient-to-br from-accent to-blue-600 hover:shadow-lg hover:shadow-accent/40 text-white font-semibold py-2 h-10"
           >
             {generateImageMutation.isPending ? (
               <>
@@ -400,7 +400,7 @@ export default function AutomaticMode() {
       ) : (
         <Card className="h-full flex items-center justify-center min-h-96">
           <CardContent className="text-center">
-            <p className="text-slate-500 text-lg">
+            <p className="text-muted-foreground text-lg">
               Cole um link ou carregue um arquivo para gerar criativos automaticamente
             </p>
           </CardContent>
