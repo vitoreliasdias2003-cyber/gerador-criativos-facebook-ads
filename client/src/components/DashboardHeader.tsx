@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Sparkles, User, Settings, LogOut, ChevronDown } from "lucide-react";
+import ForgeAdsLogo from "@/components/ForgeAdsLogo";
+import { User, Settings, LogOut, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -37,24 +38,7 @@ export default function DashboardHeader({
   return (
     <div className={cn("flex items-center justify-between", className)}>
       {/* Logo e Nome do Produto */}
-      <div className="flex items-center gap-4">
-        <div className="relative group flex items-center gap-3">
-          <img 
-            src="/assets/forgeads-logo.png" 
-            alt="ForgeAds Symbol" 
-            className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-          />
-          <div className="flex flex-col border-l border-white/10 pl-3">
-            <h1 className="text-2xl font-bold text-white tracking-tight leading-none">
-              ForgeAds
-            </h1>
-            <p className="text-[8px] text-muted-foreground uppercase tracking-[0.2em] font-bold mt-1">
-              PRECISION. PERFORMANCE. AUTOMATION.
-            </p>
-          </div>
-          <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10" />
-        </div>
-      </div>
+      <ForgeAdsLogo size={44} className="hover:opacity-90 transition-opacity" />
 
       {/* User Menu */}
       <div className="flex items-center gap-3">

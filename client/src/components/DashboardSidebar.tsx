@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "wouter";
+import ForgeAdsLogo from "@/components/ForgeAdsLogo";
 import {
   LayoutDashboard,
   Sparkles,
@@ -98,23 +99,14 @@ export default function DashboardSidebar({
     >
       {/* Logo Section */}
       <div className={cn(
-        "p-6 flex items-center gap-3 transition-all duration-300",
+        "p-6 flex items-center transition-all duration-300",
         isCollapsed ? "justify-center px-0" : "px-6"
       )}>
-        <img 
-          src="/assets/forgeads-logo.png" 
-          alt="ForgeAds Symbol" 
-          className={cn(
-            "object-contain transition-all duration-300",
-            isCollapsed ? "h-8 w-8" : "h-10 w-auto"
-          )}
+        <ForgeAdsLogo 
+          size={isCollapsed ? 32 : 36} 
+          showText={!isCollapsed} 
+          showSlogan={false} 
         />
-        {!isCollapsed && (
-          <div className="flex flex-col border-l border-white/10 pl-3">
-            <h1 className="text-lg font-bold tracking-tight text-white leading-none">ForgeAds</h1>
-            <span className="text-[6px] text-muted-foreground uppercase tracking-[0.1em] font-bold mt-1">PRECISION. PERFORMANCE.</span>
-          </div>
-        )}
       </div>
 
       {/* Collapse Button */}
