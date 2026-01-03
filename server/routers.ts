@@ -5,7 +5,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { invokeLLM } from "./_core/llm";
 import { generateImage } from "./_core/imageGeneration";
-import { saveCreative, getUserCreatives } from "./db";
+import { saveCreative, getUserCreatives, saveProduct } from "./db";
 
 export const appRouter = router({
   system: systemRouter,
@@ -158,6 +158,148 @@ A imagem deve comunicar a ideia principal do anúncio visualmente.`;
         } catch (error) {
           console.error("[Image Generation] Error:", error);
           throw new Error("Erro ao gerar imagem. Tente novamente.");
+        }
+      }),
+
+    analyzeProduct: publicProcedure
+      .input(
+        z.object({
+          content: z.string().min(1, "Conteúdo do produto é obrigatório"),
+          sourceType: z.enum(["link", "file"]),
+          sourceUrl: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const analysisPrompt = `Você é um especialista em marketing digital e copywriting.
+
+Analise o conteúdo abaixo e extraia:
+- Qual produto está sendo vendido
+- Para quem é o produto
+- Principal dor do público
+- Principal benefício
+- Promessa central
+- Tom de comunicação ideal
+
+Conteúdo do produto:
+${input.content}
+
+Responda em formato JSON com as chaves: productName, targetAudience, mainPain, mainBenefit, centralPromise, communicationTone`;
+
+        try {
+          const analysisResponse = await invokeLLM({
+            messages: [
+              {
+                role: "system",
+                content: "Você é um especialista em marketing digital. Sempre responda em formato JSON válido.",
+              },
+              {
+                role: "user",
+                content: analysisPrompt,
+              },
+            ],
+            response_format: {
+              type: "json_schema",
+              json_schema: {
+                name: "product_analysis",
+                strict: true,
+                schema: {
+                  type: "object",
+                  properties: {
+                    productName: { type: "string" },
+                    targetAudience: { type: "string" },
+                    mainPain: { type: "string" },
+                    mainBenefit: { type: "string" },
+                    centralPromise: { type: "string" },
+                    communicationTone: { type: "string" },
+                  },
+                  required: ["productName", "targetAudience", "mainPain", "mainBenefit", "centralPromise", "communicationTone"],
+                  additionalProperties: false,
+                },
+              },
+            },
+          });
+
+          const analysisContent = typeof analysisResponse.choices[0]?.message?.content === 'string'
+            ? analysisResponse.choices[0]?.message?.content
+            : "";
+
+          const analysis = JSON.parse(analysisContent);
+
+          // Gerar copy do anúncio com base na análise
+          const copyPrompt = `Você é um especialista em Facebook Ads.
+
+Com base no perfil do produto abaixo, crie UM anúncio completo.
+
+Perfil do produto:
+- Produto: ${analysis.productName}
+- Público-alvo: ${analysis.targetAudience}
+- Dor principal: ${analysis.mainPain}
+- Benefício principal: ${analysis.mainBenefit}
+- Promessa central: ${analysis.centralPromise}
+- Tom: ${analysis.communicationTone}
+
+Regras:
+- Linguagem simples
+- Não prometer ganhos irreais
+- Compatível com políticas do Facebook
+
+Entregue EXATAMENTE neste formato:
+
+HEADLINE:
+(headline curta e impactante)
+
+TEXTO DO ANÚNCIO:
+(até 3 parágrafos curtos)
+
+CTA:
+(chamada clara para ação)
+
+ÂNGULO EMOCIONAL:
+(emoção principal explorada)
+
+IDEIA DE CRIATIVO:
+(descreva uma ideia de imagem ou vídeo)`;
+
+          const copyResponse = await invokeLLM({
+            messages: [
+              {
+                role: "system",
+                content: "Você é um especialista em copywriting para Facebook Ads. Sempre responda no formato exato solicitado.",
+              },
+              {
+                role: "user",
+                content: copyPrompt,
+              },
+            ],
+          });
+
+          const copyContent = typeof copyResponse.choices[0]?.message?.content === 'string'
+            ? copyResponse.choices[0]?.message?.content
+            : "";
+
+          // Parse da resposta
+          const headlineMatch = copyContent.match(/HEADLINE:\s*\n([^\n]+(?:\n(?!TEXTO DO ANÚNCIO:)[^\n]*)*)/i);
+          const textoMatch = copyContent.match(/TEXTO DO ANÚNCIO:\s*\n([^\n]+(?:\n(?!CTA:)[^\n]*)*)/i);
+          const ctaMatch = copyContent.match(/CTA:\s*\n([^\n]+(?:\n(?!ÂNGULO EMOCIONAL:)[^\n]*)*)/i);
+          const anguloMatch = copyContent.match(/ÂNGULO EMOCIONAL:\s*\n([^\n]+(?:\n(?!IDEIA DE CRIATIVO:)[^\n]*)*)/i);
+          const ideiaMatch = copyContent.match(/IDEIA DE CRIATIVO:\s*\n([^\n]+(?:\n|$)*)/i);
+
+          return {
+            productName: analysis.productName,
+            targetAudience: analysis.targetAudience,
+            mainPain: analysis.mainPain,
+            mainBenefit: analysis.mainBenefit,
+            centralPromise: analysis.centralPromise,
+            communicationTone: analysis.communicationTone,
+            headline: headlineMatch?.[1]?.trim() || "",
+            textoAnuncio: textoMatch?.[1]?.trim() || "",
+            cta: ctaMatch?.[1]?.trim() || "",
+            anguloEmocional: anguloMatch?.[1]?.trim() || "",
+            ideiaCreativo: ideiaMatch?.[1]?.trim() || "",
+          };
+        } catch (error) {
+          console.error("[Product Analysis] Error:", error);
+          throw new Error("Erro ao analisar produto. Tente novamente.");
         }
       }),
   }),

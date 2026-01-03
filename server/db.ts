@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, InsertCreative, creatives } from "../drizzle/schema";
+import { InsertUser, users, InsertCreative, creatives, InsertProduct, products } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -121,6 +121,42 @@ export async function getUserCreatives(userId: number) {
     return result;
   } catch (error) {
     console.error("[Database] Failed to get creatives:", error);
+    return [];
+  }
+}
+
+export async function saveProduct(product: InsertProduct) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot save product: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(products).values(product);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to save product:", error);
+    throw error;
+  }
+}
+
+export async function getUserProducts(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get products: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(products)
+      .where(eq(products.userId, userId))
+      .orderBy((t) => t.createdAt);
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get products:", error);
     return [];
   }
 }

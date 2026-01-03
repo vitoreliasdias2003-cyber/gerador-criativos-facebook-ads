@@ -38,6 +38,18 @@
 - [x] Adicionar estado de carregamento para geração de imagem
 - [x] Testar fluxo completo de texto + imagem
 
+## Modo Automático por Produto (Premium)
+- [x] Implementar procedimento tRPC para análise de produto
+- [x] Implementar extração de conteúdo de link (web scraping)
+- [x] Implementar upload e leitura de arquivo (PDF, DOC, TXT)
+- [x] Criar interface com seletor de modo (Manual/Automático)
+- [x] Implementar formulário do modo automático
+- [x] Integrar geração automática de criativos
+- [x] Adicionar indicador visual de modo PREMIUM
+- [x] Testar fluxo completo de link
+- [x] Testar fluxo completo de arquivo
+- [x] Testar integração com geração de imagens
+
 ## Deployment
 - [x] Criar checkpoint final
 - [x] Validar funcionamento completo

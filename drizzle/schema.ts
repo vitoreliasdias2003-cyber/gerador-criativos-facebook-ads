@@ -46,3 +46,28 @@ export const creatives = mysqlTable("creatives", {
 
 export type Creative = typeof creatives.$inferSelect;
 export type InsertCreative = typeof creatives.$inferInsert;
+
+/**
+ * Tabela para armazenar produtos analisados no modo automatico
+ */
+export const products = mysqlTable("products", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),
+  productName: text("productName").notNull(),
+  sourceUrl: varchar("sourceUrl", { length: 500 }),
+  sourceType: varchar("sourceType", { length: 50 }).notNull(),
+  targetAudience: text("targetAudience").notNull(),
+  mainPain: text("mainPain").notNull(),
+  mainBenefit: text("mainBenefit").notNull(),
+  centralPromise: text("centralPromise").notNull(),
+  communicationTone: varchar("communicationTone", { length: 50 }).notNull(),
+  headline: text("headline").notNull(),
+  textoAnuncio: text("textoAnuncio").notNull(),
+  cta: text("cta").notNull(),
+  anguloEmocional: text("anguloEmocional").notNull(),
+  ideiaCreativo: text("ideiaCreativo").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
