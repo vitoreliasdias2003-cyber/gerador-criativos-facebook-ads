@@ -96,6 +96,27 @@ export default function DashboardSidebar({
         className
       )}
     >
+      {/* Logo Section */}
+      <div className={cn(
+        "p-6 flex items-center gap-3 transition-all duration-300",
+        isCollapsed ? "justify-center px-0" : "px-6"
+      )}>
+        <img 
+          src="/assets/forgeads-logo.png" 
+          alt="ForgeAds Logo" 
+          className={cn(
+            "object-contain transition-all duration-300",
+            isCollapsed ? "h-8 w-8" : "h-10 w-auto"
+          )}
+        />
+        {!isCollapsed && (
+          <div className="flex flex-col">
+            <h1 className="text-lg font-bold tracking-tight text-foreground leading-none">ForgeAds</h1>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium mt-1">Engine</span>
+          </div>
+        )}
+      </div>
+
       {/* Collapse Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}

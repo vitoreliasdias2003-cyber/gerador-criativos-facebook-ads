@@ -19,11 +19,13 @@ export default function HeaderPremium({
     <div className={cn("flex items-center justify-between gap-4", className)}>
       <div className="flex items-center gap-3">
         {showLogo && (
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary to-blue-700 rounded-lg blur-lg opacity-50 animate-pulse-glow" />
-            <div className="relative bg-gradient-to-br from-primary to-blue-700 p-2 rounded-lg">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
+          <div className="relative group">
+            <img 
+              src="/assets/forgeads-logo.png" 
+              alt="ForgeAds Logo" 
+              className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-500 -z-10" />
           </div>
         )}
         <div>

@@ -39,16 +39,18 @@ export default function DashboardHeader({
       {/* Logo e Nome do Produto */}
       <div className="flex items-center gap-3">
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-blue-600 to-blue-700 rounded-lg blur-md opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-          <div className="relative bg-gradient-to-br from-primary to-blue-700 p-2.5 rounded-lg shadow-lg">
-            <Sparkles className="w-6 h-6 text-white" />
-          </div>
+          <img 
+            src="/assets/forgeads-logo.png" 
+            alt="ForgeAds Logo" 
+            className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-500 -z-10" />
         </div>
-        <div>
+        <div className="hidden sm:block">
           <h1 className="text-xl font-bold text-foreground tracking-tight">
             ForgeAds
           </h1>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
             Produção profissional de anúncios
           </p>
         </div>
