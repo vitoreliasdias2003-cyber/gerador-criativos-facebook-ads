@@ -29,6 +29,16 @@
 - [x] Teste unitário para procedimento de geração
 - [x] Teste de integração do formulário
 
+## Geração de Imagens (Nova Funcionalidade)
+- [x] Implementar procedimento tRPC para gerar imagens com IA
+- [x] Integrar prompt de geração de imagens
+- [x] Adicionar botão "Gerar Imagem do Criativo" no frontend
+- [x] Exibir imagem gerada na interface
+- [x] Implementar botão "Baixar Imagem"
+- [x] Adicionar estado de carregamento para geração de imagem
+- [x] Testar fluxo completo de texto + imagem
+
 ## Deployment
 - [x] Criar checkpoint final
 - [x] Validar funcionamento completo
+- [ ] Fazer push das alterações para GitHub

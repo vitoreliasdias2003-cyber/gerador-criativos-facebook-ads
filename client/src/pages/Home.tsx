@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Copy, Check } from "lucide-react";
+import { Loader2, Copy, Check, Download, Image as ImageIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
@@ -38,15 +38,27 @@ export default function Home() {
   });
 
   const [result, setResult] = useState<CreativeResult | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const generateMutation = trpc.creative.generate.useMutation({
     onSuccess: (data) => {
       setResult(data);
+      setGeneratedImage(null);
       toast.success("Criativo gerado com sucesso!");
     },
     onError: (error) => {
       toast.error(error.message || "Erro ao gerar criativo");
+    },
+  });
+
+  const generateImageMutation = trpc.creative.generateImage.useMutation({
+    onSuccess: (data) => {
+      setGeneratedImage(data.url || null);
+      toast.success("Imagem gerada com sucesso!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Erro ao gerar imagem");
     },
   });
 
@@ -66,11 +78,38 @@ export default function Home() {
     generateMutation.mutate(formData);
   };
 
+  const handleGenerateImage = () => {
+    if (!result) {
+      toast.error("Gere o criativo de texto primeiro");
+      return;
+    }
+
+    generateImageMutation.mutate({
+      nicho: formData.nicho,
+      publico: formData.publico,
+      objetivo: formData.objetivo,
+      tom: formData.tom,
+      headline: result.headline,
+    });
+  };
+
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
     setCopiedField(field);
     toast.success("Copiado para a área de transferência!");
     setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const downloadImage = () => {
+    if (!generatedImage) return;
+
+    const link = document.createElement("a");
+    link.href = generatedImage;
+    link.download = `criativo-facebook-ads-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Imagem baixada com sucesso!");
   };
 
   return (
@@ -318,9 +357,57 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
+                {/* Generate Image Button */}
+                <Button
+                  onClick={handleGenerateImage}
+                  disabled={generateImageMutation.isPending}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 h-10"
+                >
+                  {generateImageMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Gerando Imagem...
+                    </>
+                  ) : (
+                    <>
+                      <ImageIcon className="mr-2 h-4 w-4" />
+                      Gerar Imagem do Criativo
+                    </>
+                  )}
+                </Button>
+
+                {/* Generated Image */}
+                {generatedImage && (
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base">Imagem do Criativo</CardTitle>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={downloadImage}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <img
+                        src={generatedImage}
+                        alt="Criativo gerado"
+                        className="w-full rounded-lg border border-slate-200"
+                      />
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* Novo Criativo Button */}
                 <Button
-                  onClick={() => setResult(null)}
+                  onClick={() => {
+                    setResult(null);
+                    setGeneratedImage(null);
+                  }}
                   variant="outline"
                   className="w-full"
                 >

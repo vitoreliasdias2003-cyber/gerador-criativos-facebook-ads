@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { invokeLLM } from "./_core/llm";
+import { generateImage } from "./_core/imageGeneration";
 import { saveCreative, getUserCreatives } from "./db";
 
 export const appRouter = router({
@@ -105,6 +106,58 @@ IDEIA DE CRIATIVO:
         } catch (error) {
           console.error("[LLM] Error generating creative:", error);
           throw new Error("Erro ao gerar criativo. Tente novamente.");
+        }
+      }),
+
+    generateImage: publicProcedure
+      .input(
+        z.object({
+          nicho: z.string().min(1),
+          publico: z.string().min(1),
+          objetivo: z.enum(["Vendas", "Leads", "WhatsApp"]),
+          tom: z.enum(["Emocional", "Profissional", "Direto", "Urgente"]),
+          headline: z.string().min(1),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const imagePrompt = `Crie uma imagem publicitária realista e de alta conversão para Facebook e Instagram Ads.
+
+Contexto do anúncio:
+- Nicho: ${input.nicho}
+- Público-alvo: ${input.publico}
+- Objetivo: ${input.objetivo}
+- Tom: ${input.tom}
+
+Mensagem principal do anúncio:
+${input.headline}
+
+Estilo da imagem:
+- Visual profissional
+- Alto impacto
+- Estilo publicitário
+- Sem textos longos na imagem
+
+Formato:
+- 1:1 (quadrado)
+- Alta qualidade
+- Fundo limpo ou desfocado
+- Elemento visual central claro
+
+Não adicionar texto excessivo.
+A imagem deve comunicar a ideia principal do anúncio visualmente.`;
+
+        try {
+          const result = await generateImage({
+            prompt: imagePrompt,
+          });
+
+          return {
+            url: result.url,
+            success: true,
+          };
+        } catch (error) {
+          console.error("[Image Generation] Error:", error);
+          throw new Error("Erro ao gerar imagem. Tente novamente.");
         }
       }),
   }),
