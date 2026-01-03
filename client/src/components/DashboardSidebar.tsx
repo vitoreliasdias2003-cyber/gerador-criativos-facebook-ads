@@ -35,7 +35,6 @@ export default function DashboardSidebar({
   onNavigate,
 }: DashboardSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
   const [location] = useLocation();
 
   const navItems: NavItem[] = [
@@ -59,7 +58,7 @@ export default function DashboardSidebar({
     {
       icon: Library,
       label: "Biblioteca de Anúncios",
-      href: "/biblioteca",
+      href: "https://www.facebook.com/ads/library/?active_status=active&ad_type=political_and_issue_ads&country=BR&is_targeted_country=false&media_type=all",
     },
     {
       icon: History,
@@ -113,15 +112,13 @@ export default function DashboardSidebar({
       <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
         {navItems.map((item, index) => {
           const Icon = item.icon;
-          const isActive = location === item.href || (item.href !== "/" && location.startsWith(item.href));
+          const isActive = location === item.href;
+          const isExternal = item.href.startsWith("http");
 
-          return (
-            <Link
-              key={index}
-              href={item.href}
-              onClick={item.onClick}
+          const content = (
+            <div
               className={cn(
-                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative cursor-pointer",
                 isActive
                   ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-md"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/10 hover:text-sidebar-accent-foreground"
@@ -172,6 +169,16 @@ export default function DashboardSidebar({
                   )}
                 </div>
               )}
+            </div>
+          );
+
+          return isExternal ? (
+            <a key={index} href={item.href} target="_blank" rel="noopener noreferrer" className="block">
+              {content}
+            </a>
+          ) : (
+            <Link key={index} href={item.href} onClick={item.onClick}>
+              {content}
             </Link>
           );
         })}
@@ -182,10 +189,10 @@ export default function DashboardSidebar({
         <div className="px-4 py-4 border-t border-sidebar-border">
           <div className="p-3 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg border border-primary/20">
             <p className="text-xs font-medium text-foreground mb-1">
-              💡 Dica do Dia
+              ForgeAds
             </p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Use o Modo Automático para gerar criativos a partir de links!
+              Produção profissional de anúncios para o seu negócio.
             </p>
           </div>
         </div>

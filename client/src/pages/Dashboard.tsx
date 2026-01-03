@@ -6,6 +6,7 @@ import { Sparkles, Wand2, TrendingUp, ArrowRight } from "lucide-react";
 import DashboardLayoutPremium from "@/components/DashboardLayoutPremium";
 import DashboardStats from "@/components/DashboardStats";
 import RecentCreatives from "@/components/RecentCreatives";
+import AdReportDialog from "@/components/AdReportDialog";
 import { toast } from "sonner";
 
 export default function Dashboard() {
@@ -36,10 +37,10 @@ export default function Dashboard() {
       {/* Welcome Section */}
       <div className="mb-8 animate-fade-in">
         <h2 className="text-3xl font-bold text-foreground mb-2">
-          Bem-vindo de volta! 👋
+          Painel de Controle ForgeAds
         </h2>
         <p className="text-muted-foreground">
-          Aqui está um resumo da sua atividade e criativos recentes.
+          Gerencie sua produção profissional de anúncios e acompanhe seus resultados.
         </p>
       </div>
 
@@ -156,9 +157,11 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <Button variant="outline" className="w-full mt-4">
-              Ver Relatório Completo
-            </Button>
+            <AdReportDialog>
+              <Button variant="outline" className="w-full mt-4">
+                Ver Relatório Completo
+              </Button>
+            </AdReportDialog>
           </CardContent>
         </Card>
       </div>

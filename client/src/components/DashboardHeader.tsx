@@ -46,10 +46,10 @@ export default function DashboardHeader({
         </div>
         <div>
           <h1 className="text-xl font-bold text-foreground tracking-tight">
-            Ad Creator
+            ForgeAds
           </h1>
           <p className="text-xs text-muted-foreground">
-            Gerador de Criativos Premium
+            Produção profissional de anúncios
           </p>
         </div>
       </div>

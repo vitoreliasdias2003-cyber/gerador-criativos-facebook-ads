@@ -10,8 +10,8 @@ interface HeaderPremiumProps {
 }
 
 export default function HeaderPremium({
-  title = "Ad Creator",
-  subtitle = "Gerador de Criativos para Facebook Ads",
+  title = "ForgeAds",
+  subtitle = "Produção profissional de anúncios",
   className,
   showLogo = true,
 }: HeaderPremiumProps) {
