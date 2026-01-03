@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, Wand2, TrendingUp, ArrowRight } from "lucide-react";
@@ -67,10 +68,12 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full group-hover:shadow-lg transition-shadow">
-              Começar Agora
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link href="/criar-criativo">
+              <Button className="w-full group-hover:shadow-lg transition-shadow">
+                Começar Agora
+                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -94,10 +97,12 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="secondary" className="w-full group-hover:shadow-lg transition-shadow">
-              Usar Modo Automático
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link href="/criar-criativo?mode=automatic">
+              <Button variant="secondary" className="w-full group-hover:shadow-lg transition-shadow">
+                Usar Modo Automático
+                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

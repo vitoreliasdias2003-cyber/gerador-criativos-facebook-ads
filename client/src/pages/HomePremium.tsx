@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearch } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +28,18 @@ interface CreativeResult {
 type Mode = "manual" | "automatic";
 
 export default function HomePremium() {
+  const search = useSearch();
   const [mode, setMode] = useState<Mode>("manual");
+
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    if (params.get("mode") === "automatic") {
+      setMode("automatic");
+    } else {
+      setMode("manual");
+    }
+  }, [search]);
+
   const [formData, setFormData] = useState<{
     nicho: string;
     publico: string;

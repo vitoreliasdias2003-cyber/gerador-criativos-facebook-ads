@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard,
   Sparkles,
@@ -16,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 interface NavItem {
   icon: React.ElementType;
   label: string;
-  href?: string;
+  href: string;
   badge?: string;
   badgeVariant?: "default" | "premium" | "new";
   onClick?: () => void;
@@ -35,43 +36,45 @@ export default function DashboardSidebar({
 }: DashboardSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const [location] = useLocation();
+
   const navItems: NavItem[] = [
     {
       icon: LayoutDashboard,
       label: "Dashboard",
-      onClick: () => onNavigate?.("dashboard"),
+      href: "/",
     },
     {
       icon: Wand2,
       label: "Criar Criativo",
-      onClick: () => onNavigate?.("create"),
+      href: "/criar-criativo",
     },
     {
       icon: Sparkles,
       label: "Modo Automático",
+      href: "/criar-criativo?mode=automatic",
       badge: "Premium",
       badgeVariant: "premium",
-      onClick: () => onNavigate?.("automatic"),
     },
     {
       icon: Library,
       label: "Biblioteca de Anúncios",
-      onClick: () => onNavigate?.("library"),
+      href: "/biblioteca",
     },
     {
       icon: History,
       label: "Histórico",
-      onClick: () => onNavigate?.("history"),
+      href: "/historico",
     },
     {
       icon: CreditCard,
       label: "Plano & Pagamento",
-      onClick: () => onNavigate?.("billing"),
+      href: "/plano",
     },
     {
       icon: HelpCircle,
       label: "Suporte",
-      onClick: () => onNavigate?.("support"),
+      href: "/suporte",
     },
   ];
 
@@ -113,12 +116,13 @@ export default function DashboardSidebar({
           const isActive = activeItem === item.label.toLowerCase().replace(/\s+/g, "-");
 
           return (
-            <button
+            <Link
               key={index}
+              href={item.href}
               onClick={item.onClick}
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
-                isActive
+                location === item.href
                   ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-md"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/10 hover:text-sidebar-accent-foreground"
               )}
@@ -168,7 +172,7 @@ export default function DashboardSidebar({
                   )}
                 </div>
               )}
-            </button>
+            </Link>
           );
         })}
       </nav>
