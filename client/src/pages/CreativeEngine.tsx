@@ -65,7 +65,7 @@ export default function CreativeEngine() {
   };
 
   return (
-    <DashboardLayoutPremium activeNavItem="criativos">
+    <DashboardLayoutPremium>
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

@@ -67,7 +67,7 @@ export default function CopyEngine() {
   };
 
   return (
-    <DashboardLayoutPremium activeNavItem="copys">
+    <DashboardLayoutPremium>
       <div className="max-w-5xl mx-auto">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">

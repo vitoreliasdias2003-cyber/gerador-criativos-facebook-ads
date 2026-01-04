@@ -1,170 +1,185 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Wand2, TrendingUp, ArrowRight } from "lucide-react";
+import { 
+  Zap, 
+  Wand2, 
+  Sparkles, 
+  TrendingUp, 
+  ArrowRight, 
+  ShieldCheck, 
+  Clock,
+  Plus,
+  BarChart3,
+  Layers
+} from "lucide-react";
 import DashboardLayoutPremium from "@/components/DashboardLayoutPremium";
-import DashboardStats from "@/components/DashboardStats";
-import RecentCreatives from "@/components/RecentCreatives";
-import AdReportDialog from "@/components/AdReportDialog";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+
+const container: any = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const item: any = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 export default function Dashboard() {
-  const handleNavigate = (item: string) => {
-    toast.info(`Navegando para: ${item}`);
-    // Aqui você pode implementar a navegação real com wouter
-  };
-
-  const handleCopyCreative = (creative: any) => {
-    toast.success("Criativo copiado!");
-  };
-
-  const handleGenerateImage = (creative: any) => {
-    toast.info("Gerando imagem...");
-  };
-
-  const handleDuplicate = (creative: any) => {
-    toast.success("Criativo duplicado!");
-  };
-
   return (
-    <DashboardLayoutPremium
-      userName="Vitor Elias"
-      userPlan="Premium"
-      activeNavItem="dashboard"
-      onNavigate={handleNavigate}
-    >
-      {/* Welcome Section */}
-      <div className="mb-8 animate-fade-in">
-        <h2 className="text-3xl font-bold text-foreground mb-2">
-          Painel de Controle ForgeAds
-        </h2>
-        <p className="text-muted-foreground">
-          Gerencie sua produção profissional de anúncios e acompanhe seus resultados.
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      <DashboardStats
-        totalCreatives={47}
-        creditsAvailable={250}
-        currentPlan="Premium"
-        className="mb-8"
-      />
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-fade-in" style={{ animationDelay: "200ms" }}>
-        {/* Creative Engine */}
-        <Card className="group hover:shadow-xl hover:border-primary/30 transition-all duration-300 cursor-pointer relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500 to-cyan-500 opacity-10 group-hover:opacity-20 transition-opacity duration-300 blur-2xl" />
-          <CardHeader>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
-                <Wand2 className="w-5 h-5 text-white" />
-              </div>
-              <CardTitle className="text-lg">Creative Engine</CardTitle>
-            </div>
-            <CardDescription>
-              Gere criativos visuais de alta performance com IA
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/criativos">
-              <Button className="w-full group-hover:shadow-lg transition-shadow">
-                Gerar Criativos Visuais
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+    <DashboardLayoutPremium>
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="space-y-12"
+      >
+        {/* Header Section */}
+        <motion.div variants={item} className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-2">
+            <h2 className="text-5xl font-black tracking-tighter leading-none">
+              Overview
+            </h2>
+            <p className="text-muted-foreground text-lg font-medium">
+              Bem-vindo à nova era da automação de anúncios.
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Link href="/automatico">
+              <Button className="h-12 px-6 rounded-xl font-bold bg-primary hover:brightness-110 shadow-lg shadow-primary/20 gap-2">
+                <Plus className="w-5 h-5" />
+                Novo Projeto
               </Button>
             </Link>
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
 
-        {/* Copy Engine */}
-        <Card className="group hover:shadow-xl hover:border-accent/30 transition-all duration-300 cursor-pointer relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500 to-pink-500 opacity-10 group-hover:opacity-20 transition-opacity duration-300 blur-2xl" />
-          <CardHeader>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg">
-                <Sparkles className="w-5 h-5 text-white" />
+        {/* Stats Grid */}
+        <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[
+            { label: "Criativos Totais", value: "47", icon: Layers, color: "text-blue-500" },
+            { label: "Créditos", value: "250", icon: Zap, color: "text-primary" },
+            { label: "Taxa de Conversão", value: "+24%", icon: TrendingUp, color: "text-green-500" },
+            { label: "CTR Médio", value: "3.8%", icon: BarChart3, color: "text-purple-500" },
+          ].map((stat, i) => (
+            <div key={i} className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors group">
+              <div className="flex items-center justify-between mb-4">
+                <div className={stat.color}>
+                  <stat.icon className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Live</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CardTitle className="text-lg">Copy Engine</CardTitle>
-                <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-0.5 rounded-full font-semibold">
-                  PREMIUM
-                </span>
-              </div>
+              <p className="text-3xl font-black tracking-tighter mb-1">{stat.value}</p>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{stat.label}</p>
             </div>
-            <CardDescription>
-              ChatGPT especializado em copywriting de alta conversão
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/copys">
-              <Button variant="secondary" className="w-full group-hover:shadow-lg transition-shadow">
-                Gerar Copys Profissionais
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+          ))}
+        </motion.div>
 
-      {/* Recent Creatives */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: "300ms" }}>
-        <div className="lg:col-span-2">
-          <RecentCreatives
-            onCopy={handleCopyCreative}
-            onGenerateImage={handleGenerateImage}
-            onDuplicate={handleDuplicate}
-          />
+        {/* Main Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Automação Premium Card */}
+          <motion.div variants={item} className="lg:col-span-2 group">
+            <Link href="/automatico">
+              <div className="relative h-full p-10 rounded-[2.5rem] bg-gradient-to-br from-primary/20 to-blue-600/5 border border-primary/20 overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/40">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[100px] rounded-full -mr-48 -mt-48 group-hover:bg-primary/20 transition-colors duration-500" />
+                <div className="relative h-full flex flex-col justify-between">
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <div className="p-4 rounded-2xl bg-primary shadow-xl shadow-primary/20">
+                        <Zap className="w-8 h-8 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-3xl font-black tracking-tighter">Automação Premium</h3>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] bg-primary text-white px-2 py-0.5 rounded-full font-black tracking-widest">NOVO MOTOR</span>
+                          <span className="text-[10px] text-primary font-black uppercase tracking-widest flex items-center gap-1">
+                            <ShieldCheck className="w-3 h-3" /> Verificado
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-xl text-muted-foreground max-w-md leading-relaxed font-medium">
+                      Análise real de links e documentos para forjar anúncios de alta conversão em segundos.
+                    </p>
+                  </div>
+                  <div className="mt-12 flex items-center gap-3 text-primary font-black uppercase tracking-widest text-sm group-hover:gap-5 transition-all">
+                    Começar agora <ArrowRight className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Side Actions */}
+          <div className="space-y-6">
+            <motion.div variants={item}>
+              <Link href="/criativos">
+                <div className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all duration-500 cursor-pointer group">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-xl bg-blue-500/10 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
+                      <Wand2 className="w-6 h-6" />
+                    </div>
+                    <h4 className="text-xl font-black tracking-tight">Creative Engine</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                    Gere visuais profissionais com IA de última geração.
+                  </p>
+                </div>
+              </Link>
+            </motion.div>
+
+            <motion.div variants={item}>
+              <Link href="/copys">
+                <div className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-purple-500/30 transition-all duration-500 cursor-pointer group">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-xl bg-purple-500/10 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all duration-500">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                    <h4 className="text-xl font-black tracking-tight">Copy Engine</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                    ChatGPT especializado em copywriting de alta conversão.
+                  </p>
+                </div>
+              </Link>
+            </motion.div>
+          </div>
         </div>
 
-        {/* Performance Card */}
-        <Card className="animate-fade-in" style={{ animationDelay: "400ms" }}>
-          <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-green-500" />
-              Performance
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-4 rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Taxa de Conversão</span>
-                <span className="text-lg font-bold text-green-500">+24%</span>
+        {/* Recent Activity */}
+        <motion.div variants={item} className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-black tracking-tight flex items-center gap-3">
+              <Clock className="w-6 h-6 text-muted-foreground" />
+              Atividade Recente
+            </h3>
+            <Link href="/historico">
+              <Button variant="ghost" className="text-xs font-bold uppercase tracking-widest hover:bg-white/5">Ver Tudo</Button>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="p-6 rounded-3xl bg-white/[0.01] border border-white/5 hover:bg-white/[0.03] transition-all cursor-pointer group">
+                <div className="aspect-video rounded-2xl bg-white/5 mb-4 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                    <span className="text-[10px] font-black text-white uppercase tracking-widest">Visualizar</span>
+                  </div>
+                </div>
+                <h5 className="font-bold mb-1">Projeto de Anúncio #{i}</h5>
+                <p className="text-xs text-muted-foreground font-medium">Gerado há {i * 2} horas atrás</p>
               </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full" style={{ width: "75%" }} />
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Engajamento</span>
-                <span className="text-lg font-bold text-blue-500">+18%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full" style={{ width: "60%" }} />
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">CTR Médio</span>
-                <span className="text-lg font-bold text-purple-500">3.8%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style={{ width: "85%" }} />
-              </div>
-            </div>
-
-            <AdReportDialog>
-              <Button variant="outline" className="w-full mt-4">
-                Ver Relatório Completo
-              </Button>
-            </AdReportDialog>
-          </CardContent>
-        </Card>
-      </div>
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
     </DashboardLayoutPremium>
   );
 }
