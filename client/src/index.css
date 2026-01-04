@@ -108,11 +108,25 @@
 
   /* Premium Buttons */
   .btn-framer {
-    @apply relative overflow-hidden transition-all duration-300 active:scale-95;
+    position: relative;
+    overflow: hidden;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+  }
+  
+  .btn-framer:active {
+    transform: scale(0.95);
   }
   
   .btn-framer-primary {
-    @apply btn-framer bg-primary text-white hover:brightness-110 shadow-lg shadow-primary/20;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    box-shadow: 0 10px 15px -3px rgba(24, 119, 242, 0.2);
+  }
+  
+  .btn-framer-primary:hover {
+    filter: brightness(1.1);
   }
 
   /* Custom Scrollbar */
