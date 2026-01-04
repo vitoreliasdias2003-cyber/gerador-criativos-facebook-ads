@@ -154,12 +154,13 @@ function cleanText(text: string): string {
   return text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim();
 }
 
+// NOTA: Esta função foi substituída por pdfExtractor.ts que usa pdftotext
 export async function extractContentFromPDF(buffer: Buffer): Promise<ExtractedContent> {
   try {
-    const pdfParseModule = await import('pdf-parse') as any;
-    const pdfParse = pdfParseModule.default || pdfParseModule;
-    const data = await pdfParse(buffer);
-    const fullText = data.text.trim();
+    // const pdfParseModule = await import('pdf-parse') as any;
+    // const pdfParse = pdfParseModule.default || pdfParseModule;
+    // const data = await pdfParse(buffer);
+    const fullText: string = ''; // buffer.toString('utf-8').trim();
     
     if (!fullText || fullText.length < 150) {
       return { title: '', description: '', fullText: '', metaTags: {}, headings: [], bullets: [], prices: [], ctas: [], isSufficient: false };

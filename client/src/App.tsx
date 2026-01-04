@@ -4,7 +4,11 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import History from "./pages/History";
 import CreativeEngine from "./pages/CreativeEngine";
 import CopyEngine from "./pages/CopyEngine";
 // CopyHistory removido por não existir no projeto original
@@ -28,26 +32,43 @@ function Router() {
   return (
     <AnimatePresence mode="wait">
       <Switch>
-        {/* App inicia diretamente no Dashboard */}
+        {/* Rota de Login (pública) */}
+        <Route path="/login">
+          <PageWrapper><Login /></PageWrapper>
+        </Route>
+
+        {/* Rotas protegidas */}
         <Route path="/">
-          <PageWrapper><Dashboard /></PageWrapper>
+          <ProtectedRoute>
+            <PageWrapper><Dashboard /></PageWrapper>
+          </ProtectedRoute>
         </Route>
         <Route path="/dashboard">
-          <PageWrapper><Dashboard /></PageWrapper>
+          <ProtectedRoute>
+            <PageWrapper><Dashboard /></PageWrapper>
+          </ProtectedRoute>
         </Route>
         
-        {/* Outras rotas do app */}
+        {/* Outras rotas do app (protegidas) */}
         <Route path="/criativos">
-          <PageWrapper><CreativeEngine /></PageWrapper>
+          <ProtectedRoute>
+            <PageWrapper><CreativeEngine /></PageWrapper>
+          </ProtectedRoute>
         </Route>
         <Route path="/copys">
-          <PageWrapper><CopyEngine /></PageWrapper>
+          <ProtectedRoute>
+            <PageWrapper><CopyEngine /></PageWrapper>
+          </ProtectedRoute>
         </Route>
         <Route path="/historico">
-          <PageWrapper><Dashboard /></PageWrapper>
+          <ProtectedRoute>
+            <PageWrapper><History /></PageWrapper>
+          </ProtectedRoute>
         </Route>
         <Route path="/automatico">
-          <PageWrapper><AutomaticModePremium /></PageWrapper>
+          <ProtectedRoute>
+            <PageWrapper><AutomaticModePremium /></PageWrapper>
+          </ProtectedRoute>
         </Route>
         
         {/* Redirecionamento de rotas antigas */}
@@ -72,10 +93,12 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

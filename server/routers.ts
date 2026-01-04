@@ -7,6 +7,9 @@ import { invokeLLM } from "./_core/llm";
 import { generateImage } from "./_core/imageGeneration";
 import { saveCreative, getUserCreatives, saveProduct } from "./db";
 import { extractContentFromUrl, extractContentFromFile } from "./_core/contentExtractor";
+import { scrapeLandingPage, analyzeScrapedData } from "./_core/webScraper";
+import { analyzeProductFromData, generateCopyFromAnalysis, generateCreativeBriefing } from "./_core/productAnalyzer";
+import { processPDFUpload } from "./_core/pdfExtractor";
 
 export const appRouter = router({
   system: systemRouter,
@@ -95,74 +98,53 @@ PROIBIDO: Textos, logos, aparência de IA barata.`;
         fileType: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
-        // CAMADA 1 - MOTOR DE ANÁLISE
-        let extracted;
+        // CAMADA 1 - MOTOR DE ANÁLISE (NOVO - USA SCRAPING REAL)
+        let extractedContent: string;
+
         if (input.sourceType === "link" && input.sourceUrl) {
-          extracted = await extractContentFromUrl(input.sourceUrl);
+          // Scraping real da landing page
+          const scrapedData = await scrapeLandingPage(input.sourceUrl);
+          const analyzed = analyzeScrapedData(scrapedData);
+          
+          // Montar conteúdo estruturado
+          extractedContent = `
+Nome do Produto: ${analyzed.productName}
+Headline Principal: ${analyzed.mainHeadline}
+Descrição: ${analyzed.description}
+Benefícios: ${analyzed.keyBenefits.join(', ')}
+CTAs: ${analyzed.callsToAction.join(', ')}
+Preços: ${analyzed.pricing.join(', ')}
+Conteúdo completo: ${scrapedData.allText}
+          `.trim();
         } else if (input.sourceType === "file" && input.fileContent && input.fileType) {
-          extracted = await extractContentFromFile(Buffer.from(input.fileContent, 'base64'), input.fileType);
+          // Extração de PDF (será implementado)
+          extractedContent = Buffer.from(input.fileContent, 'base64').toString('utf-8');
         } else {
-          throw new Error("Fonte inválida.");
+          throw new Error("Fonte inválida. Forneça uma URL ou arquivo.");
         }
 
-        if (!extracted.isSufficient) {
-          throw new Error("Dados insuficientes na fonte fornecida.");
-        }
+        // Análise do produto com IA
+        const sourceTypeForAnalysis = input.sourceType === 'file' ? 'pdf' : 'link';
+        const analysis = await analyzeProductFromData(
+          sourceTypeForAnalysis,
+          extractedContent
+        );
 
-        const analysisPrompt = `Analista Semântico Sênior. Extraia a estrutura REAL da oferta:
-Conteúdo: ${extracted.fullText}
-Responda em JSON: productName, targetAudience, mainPain, mainBenefit, centralPromise, communicationTone.
-REGRAS: ❌ NÃO INVENTE. ❌ SEM CONTEÚDO GENÉRICO.`;
+        // CAMADA 2 - GERAÇÃO DE COPY
+        const headline = await generateCopyFromAnalysis(analysis, 'headline', 'Conversão');
+        const textoAnuncio = await generateCopyFromAnalysis(analysis, 'anuncio', 'Conversão');
+        const cta = await generateCopyFromAnalysis(analysis, 'cta', 'Conversão');
 
-        const analysisResponse = await invokeLLM({
-          messages: [
-            { role: "system", content: "Analista de marketing. Responda apenas JSON válido." },
-            { role: "user", content: analysisPrompt }
-          ],
-          response_format: { type: "json_object" }
-        });
-
-        const analysis = JSON.parse(typeof analysisResponse.choices[0]?.message?.content === 'string' ? analysisResponse.choices[0]?.message?.content : "{}");
-
-        if (!analysis.productName || !analysis.targetAudience) {
-          throw new Error("Não foi possível identificar o produto ou público.");
-        }
-
-        // Gerar Copy baseada na análise
-        const copyPrompt = `Copywriter Sênior. Crie anúncio para:
-Produto: ${analysis.productName}
-Público: ${analysis.targetAudience}
-Dor: ${analysis.mainPain}
-Promessa: ${analysis.centralPromise}
-
-Formato:
-HEADLINE: (impactante)
-TEXTO DO ANÚNCIO: (até 3 parágrafos)
-CTA: (chamada clara)
-ÂNGULO EMOCIONAL: (emoção principal)
-IDEIA DE CRIATIVO: (briefing visual)`;
-
-        const copyResponse = await invokeLLM({
-          messages: [
-            { role: "system", content: "Especialista em copywriting. Responda apenas no formato solicitado." },
-            { role: "user", content: copyPrompt }
-          ]
-        });
-
-        const copyContent = typeof copyResponse.choices[0]?.message?.content === 'string' ? copyResponse.choices[0]?.message?.content : "";
-        const headlineMatch = copyContent.match(/HEADLINE:\s*\n([^\n]+(?:\n(?!TEXTO DO ANÚNCIO:)[^\n]*)*)/i);
-        const textoMatch = copyContent.match(/TEXTO DO ANÚNCIO:\s*\n([^\n]+(?:\n(?!CTA:)[^\n]*)*)/i);
-        const ctaMatch = copyContent.match(/CTA:\s*\n([^\n]+(?:\n(?!ÂNGULO EMOCIONAL:)[^\n]*)*)/i);
-        const anguloMatch = copyContent.match(/ÂNGULO EMOCIONAL:\s*\n([^\n]+(?:\n(?!IDEIA DE CRIATIVO:)[^\n]*)*)/i);
-        const ideiaMatch = copyContent.match(/IDEIA DE CRIATIVO:\s*\n([^\n]+(?:\n|$)*)/i);
+        // CAMADA 3 - BRIEFING DE CRIATIVO
+        const ideiaCreativo = await generateCreativeBriefing(analysis);
 
         return {
           ...analysis,
-          headline: headlineMatch?.[1]?.trim() || "",
-          textoAnuncio: textoMatch?.[1]?.trim() || "",
-          cta: ctaMatch?.[1]?.trim() || "",
-          anguloEmocional: anguloMatch?.[1]?.trim() || "",
-          ideiaCreativo: ideiaMatch?.[1]?.trim() || "",
+          headline,
+          textoAnuncio,
+          cta,
+          anguloEmocional: analysis.mainPain,
+          ideiaCreativo,
         };
       }),
   }),

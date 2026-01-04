@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import ForgeAdsLogo from "@/components/ForgeAdsLogo";
 import { User, Settings, LogOut, ChevronDown } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -21,9 +23,17 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({
   className,
-  userName = "Usuário",
-  userPlan = "Free",
-}: DashboardHeaderProps) {
+}: Omit<DashboardHeaderProps, 'userName' | 'userPlan'>) {
+  const { user, profile, signOut } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const userName = user?.email?.split('@')[0] || 'Usuário';
+  const userPlan = profile?.plano === 'premium' ? 'Premium' : profile?.plano === 'pro' ? 'Pro' : 'Free';
+
+  const handleLogout = async () => {
+    await signOut();
+    setLocation('/login');
+  };
   const getPlanColor = () => {
     switch (userPlan) {
       case "Premium":
@@ -79,7 +89,10 @@ export default function DashboardHeader({
               <span>Configurações</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
+            <DropdownMenuItem 
+              onClick={handleLogout}
+              className="cursor-pointer text-destructive focus:text-destructive"
+            >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Sair</span>
             </DropdownMenuItem>
